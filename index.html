@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Support Ticket System</title>
+<style>
+body{font-family:Arial;background:#f0f2f5;display:flex;justify-content:center;padding:30px}
+.card{background:white;padding:25px;border-radius:12px;width:400px;box-shadow:0 4px 10px rgba(0,0,0,0.1)}
+input,textarea{width:100%;padding:10px;margin:8px 0;border:1px solid #ddd;border-radius:8px}
+button{background:#007bff;color:white;border:none;padding:12px;width:100%;border-radius:8px;font-size:16px;cursor:pointer}
+#result{margin-top:15px;padding:10px;border-radius:8px;display:none}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>Support Ticket System</h2>
+<p>Submit your issue, we will help you!</p>
+<input id="name" placeholder="Your Name">
+<input id="email" placeholder="Your Email">
+<textarea id="issue" placeholder="Describe your issue..."></textarea>
+<button onclick="submitTicket()">Submit Ticket</button>
+<div id="result"></div>
+</div>
+<script>
+async function submitTicket(){
+  const name=document.getElementById('name').value;
+  const email=document.getElementById('email').value;
+  const issue=document.getElementById('issue').value;
+  const res=document.getElementById('result');
+  res.style.display='block';
+  res.innerHTML='Sending...';
+  try{
+    const response=await fetch('https://romv5psaxe.execute-api.us-east-1.amazonaws.com/prod/tickets',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,email,issue})
+    });
+    const data=await response.json();
+    res.style.background='#d4edda';
+    res.innerHTML='✅ SUCCESS! Ticket Created!<br>Ticket ID: '+(data.ticketId || JSON.stringify(data));
+  }catch(e){
+    res.style.background='#f8d7da';
+    res.innerHTML='❌ Error: '+e.message;
+  }
+}
+</script>
+</body>
+</html>
